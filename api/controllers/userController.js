@@ -7,6 +7,8 @@ export const test = (req, res) => {
 };
 
 export const updateUser = async (req, res, next) => {
+  console.log("Body:", req.body);
+
   if (req.user.id !== req.params.userId) {
     return next(errorHandler(403, "You are not allowed to update this user"));
   }
@@ -37,7 +39,7 @@ export const updateUser = async (req, res, next) => {
       );
 
     try {
-      const updateUser = await User.findByIdAndUpdate(
+      const updatedUser = await User.findByIdAndUpdate(
         req.params.userId,
         {
           $set: {
@@ -49,6 +51,8 @@ export const updateUser = async (req, res, next) => {
         },
         { new: true }
       );
+      const { password, ...rest } = updatedUser._doc;
+      res.status(200).json(rest);
     } catch (err) {
       next(err);
     }
