@@ -61,10 +61,12 @@ export default function DashProfile() {
   const uploadImage = async () => {
     setImageFileUploading(true);
     setImageFileUploadError(null);
+
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -87,6 +89,7 @@ export default function DashProfile() {
           setImageFileUrl(downloadURL);
           setFormData({ ...formData, profilePicture: downloadURL });
           setImageFileUploading(false);
+          setImageFileUploadProgress(null);
         });
       }
     );
@@ -98,16 +101,25 @@ export default function DashProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setUpdateUserError(null);
     setUpdateUserSuccess(null);
+
     if (Object.keys(formData).length === 0) {
       setUpdateUserError("No changes made");
       return;
     }
+
+    if (!formData.profilePicture && !imageFileUrl) {
+      setUpdateUserError("Profile picture is required");
+      return;
+    }
+
     if (imageFileUploading) {
       setUpdateUserError("Please wait for image to upload");
       return;
     }
+
     try {
       dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -117,7 +129,9 @@ export default function DashProfile() {
         },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         dispatch(updateFailure(data.message));
         setUpdateUserError(data.message);
@@ -247,6 +261,7 @@ export default function DashProfile() {
         >
           {loading ? "Loading..." : "Update"}
         </Button>
+
         {currentUser.isAdmin && (
           <Link to={"/create-post"}>
             <Button
@@ -272,11 +287,7 @@ export default function DashProfile() {
           {updateUserSuccess}
         </Alert>
       )}
-      {updateUserError && (
-        <Alert color="failure" className="mt-5">
-          {updateUserError}
-        </Alert>
-      )}
+
       {error && (
         <Alert color="failure" className="mt-5">
           {error}
