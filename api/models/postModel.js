@@ -22,7 +22,7 @@ const postSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      default: "unauthorized",
+      default: "unauthorized ",
     },
     slug: {
       type: String,

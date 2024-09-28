@@ -1,21 +1,22 @@
-import Post from "../models/postModel";
-import { errorHandler } from "../utils/error";
+import Post from "../models/postModel.js";
+import { errorHandler } from "../utils/error.js";
 
 export const create = async (req, res, next) => {
   if (!req.user.isAdmin) {
-    next(errorHandler(403, "You are not allowed to create a post"));
+    return next(errorHandler(403, "You are not allowed to create a post"));
   }
 
-  if (!req.body.title || req.body.content) {
-    next(errorHandler(403, "Provide all the required fields contents to post"));
+  if (!req.body.title || !req.body.content) {
+    return next(
+      errorHandler(403, "Provide all the required fields to create a post")
+    );
   }
 
   const slug = req.body.title
     .split(" ")
     .join("-")
-    .toLowercase()
-    .replace(/[^a-zA-Z0-9]/g, " ");
-
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9-]/g, "");
   const newPost = new Post({
     ...req.body,
     slug,
