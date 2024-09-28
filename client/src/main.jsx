@@ -11,7 +11,7 @@ createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <ThemeProvider>
-        <App />
+          <App />
       </ThemeProvider>
     </PersistGate>
   </Provider>
