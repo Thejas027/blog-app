@@ -70,9 +70,54 @@ export const deleteUser = async (req, res, next) => {
 
 // controller function for signout
 export const signout = async (req, res, next) => {
-  try{
-    res.clearCookie("access_token").status(200).json("User has been signed out")
-  }catch(error){
-    next(error)
+  try {
+    res
+      .clearCookie("access_token")
+      .status(200)
+      .json("User has been signed out");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getusers = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(errorHandler(403, "You are not allowed to see all users"));
+  }
+
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortDirection = req.query.sortDirection === "asc" ? 1 : -1;
+
+    const users = await User.find()
+      .sort({ createdAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+
+    const usersWithoutPasswords = users.map((user) => {
+      const { password, ...rest } = user._doc;
+      return rest;
+    });
+
+    const totalUsers = await User.countDocuments();
+    console.log(totalUsers);
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: oneMonthAgo,
+    });
+
+    res
+      .status(200)
+      .json({ users: usersWithoutPasswords, totalUsers, lastMonthUsers });
+  } catch (error) {
+    next(error);
   }
 };
