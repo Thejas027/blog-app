@@ -14,10 +14,12 @@ import PrivateRoute from "./components/PrivateRoute";
 import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import UpdatePost from "./pages/UpdatePost";
 import PostPage from "./pages/PostPage";
+import ScrollToUp from "./components/ScrollToUp";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToUp />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />

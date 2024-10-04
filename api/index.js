@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/userRoute.js";
 import authRoutes from "./routes/authRoute.js";
 import postRoutes from "./routes/postRoute.js";
+import commentRoute from "./routes/commentRoute.js";
 
 import cookieParser from "cookie-parser";
 
@@ -27,6 +28,8 @@ app.use(cookieParser());
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/post", postRoutes);
+app.use("/api/comment", commentRoute);
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
