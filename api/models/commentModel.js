@@ -6,6 +6,10 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    postId: {
+      type: String,
+      required: true,
+    },
     userId: {
       type: String,
       required: true,
@@ -25,4 +29,3 @@ const commentSchema = new mongoose.Schema(
 const Comment = mongoose.model("Comment", commentSchema);
 
 export default Comment;
-      
