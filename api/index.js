@@ -9,6 +9,8 @@ import commentRoute from "./routes/commentRoute.js";
 
 import cookieParser from "cookie-parser";
 
+import path from "path";
+
 dotenv.config();
 
 mongoose
@@ -20,6 +22,8 @@ mongoose
     console.log(err);
   });
 
+const __dirname = path.resolve();
+
 const app = express();
 
 app.use(express.json());
@@ -29,6 +33,12 @@ app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoute);
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
