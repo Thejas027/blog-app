@@ -101,7 +101,6 @@ export const getusers = async (req, res, next) => {
     });
 
     const totalUsers = await User.countDocuments();
-    console.log(totalUsers);
     const now = new Date();
 
     const oneMonthAgo = new Date(

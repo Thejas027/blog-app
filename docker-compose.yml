@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: ./api
+    container_name: blog-app-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/blogdb
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./client
+    container_name: blog-app-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo
+    container_name: blog-app-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
